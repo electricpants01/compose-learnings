@@ -1,7 +1,9 @@
-package com.locotoinnovations.composelearnings.network
+package com.locotoinnovations.composelearnings.di
 
+import com.locotoinnovations.composelearnings.database.post.PostDao
 import com.locotoinnovations.composelearnings.network.posts.PostService
-import com.locotoinnovations.composelearnings.ui.screen.PostRepository
+import com.locotoinnovations.composelearnings.repository.PostDataSourceImpl
+import com.locotoinnovations.composelearnings.repository.PostRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -14,7 +16,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object Network {
+object NetworkModule {
 
     private const val API_PROD = "https://jsonplaceholder.typicode.com/"
 
@@ -43,7 +45,14 @@ object Network {
 
     @Provides
     @Singleton
-    fun providesPostRepository(postService: PostService): PostRepository {
-        return PostRepository(postService)
-    }
+    fun providesPostDataSourceImpl(
+        postService: PostService,
+        postDao: PostDao,
+    ): PostDataSourceImpl = PostDataSourceImpl(postService, postDao)
+
+    @Provides
+    @Singleton
+    fun providesPostRepository(
+        postDataSourceImpl: PostDataSourceImpl,
+    ): PostRepository = PostRepository(postDataSourceImpl)
 }

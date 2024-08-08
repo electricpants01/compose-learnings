@@ -4,5 +4,5 @@ import retrofit2.http.GET
 
 fun interface PostService {
     @GET("posts")
-    suspend fun getPosts(): List<Post>
+    suspend fun getPosts(): List<PostResponse>
 }

@@ -2,8 +2,9 @@ package com.locotoinnovations.composelearnings.ui.screen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.locotoinnovations.composelearnings.database.post.PostEntity
 import com.locotoinnovations.composelearnings.network.DataResult
-import com.locotoinnovations.composelearnings.network.posts.Post
+import com.locotoinnovations.composelearnings.repository.PostRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,5 +35,5 @@ class MainScreenViewModel @Inject constructor(
 
 data class MainScreenState(
  val isLoading: Boolean = true,
-    val posts: DataResult<List<Post>>? = null,
+    val posts: DataResult<List<PostEntity>>? = null,
 )

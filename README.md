@@ -10,15 +10,12 @@
 
 ## Steps in this lesson:
 1. Create a `network` package for your Network Module
-2. Create a generic sealed class for your `DataResult` that will handle the success and error states
-3. Create a `PostService` interface for your API calls
-4. Create your model class, in this case, `Post`
-5. Create a `PostRepository` class to handle your API calls that will return a `Flow<DataResult<List<Post>>>`
-6. Create a `PostViewModel` class that will handle your UI logic 
-   - use `repository.getPosts.onEach` to collect the flow and update the UI
-   - do not forget to `launchIn` the viewModelScope
-   - create a MainScreenState to handle the UI states
-7. Create a `PostScreen` composable that will display the data
-   - create your `viewModel` inside your composable and call `hiltViewModel()` to get the viewModel
-   - use `viewModel.mainScreenState.collectAsStateWithLifecycle()` to collect the state
-   - use `when` to handle the UI states
+   - create a `PostService` interface
+   - create a `PostResponse` data class that represents the response from the API
+2. Create a `database` package for your Database Module
+   - create a `PostDao`
+   - create a `PostEntity`
+   - create a `ProductionAppDatabase` abstract class that extends `RoomDatabase`
+3. Create a `repository` package for your Repository Module
+   - create a `PostDataSource` interface that will be implemented by `PostDataSourceImpl`
+4. 
