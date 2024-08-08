@@ -13,6 +13,8 @@ retrofit2 = "2.11.0"
 okhttp3 = "4.12.0"
 hiltVersion = "2.52"
 kspVersion = "2.0.10-1.0.24"
+navigationCompose = "2.7.7"
+hiltNavigationCompose = "1.2.0"
 
 
 [libraries]
@@ -43,6 +45,9 @@ okhttp3-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-
 # dagger hilt
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hiltVersion" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hiltVersion" }
+# navigation
+navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
+hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
