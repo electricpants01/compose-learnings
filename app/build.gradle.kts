@@ -40,6 +40,7 @@ android {
         jvmTarget = "1.8"
     }
     buildFeatures {
+        buildConfig = true
         compose = true
     }
     composeOptions {
@@ -83,4 +84,10 @@ dependencies {
     // dagger hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
+    // launch darkly
+    implementation(libs.launch.darkly)
+    // initializer
+    implementation(libs.start.up)
+    // timber
+    implementation(libs.timber)
 }
