@@ -17,12 +17,14 @@ object FeatureToggleInitializer {
             clientInfo = clientInfo,
         )
 
+        // first, we init the impl logic
         FeatureToggleManagerInstance.init(
             featureToggleProvider = FeatureToggleProviderImpl(
                 launchDarklyFeatureToggleProvider = launchDarklyFeatureToggleProvider,
             )
         )
 
+        // Then, we init the LaunchDarkly context
         launchDarklyFeatureToggleProvider.init(
             application = application
         )

@@ -14,6 +14,9 @@ import kotlinx.coroutines.launch
 import java.util.concurrent.ExecutionException
 import java.util.concurrent.TimeUnit
 
+/**
+ * Set the LaunchDarkly context
+ */
 class LaunchDarklyFeatureToggleProvider(
     private val clientInfo: FeatureToggleUser,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
