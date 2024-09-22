@@ -1,27 +1,39 @@
-const mysql = require('mysql');
+const { Client } = require('pg');
 
-const connection = mysql.createConnection({
+const client = new Client({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
     password: process.env.DB_PASS,
-    database: process.env.DB_NAME
+    database: process.env.DB_NAME,
+    port: 5432,
 });
 
 exports.handler = async (event) => {
-    const { id, title, description, status } = JSON.parse(event.body); // Datos enviados en la solicitud PUT
-    return new Promise((resolve, reject) => {
-        const sql = 'UPDATE todos SET title = ?, description = ?, status = ? WHERE id = ?';
-        connection.query(sql, [title, description, status, id], (error, results) => {
-            if (error) {
-                reject({
-                    statusCode: 500,
-                    body: JSON.stringify({ message: 'Error al actualizar la tarea', error }),
-                });
-            }
-            resolve({
-                statusCode: 200,
-                body: JSON.stringify({ message: 'Tarea actualizada con éxito', results }),
-            });
-        });
-    });
+    const { id, title, description, status } = JSON.parse(event.body);
+
+    await client.connect();
+
+    try {
+        const sql = 'UPDATE todos SET title = $1, description = $2, status = $3 WHERE id = $4';
+        const res = await client.query(sql, [title, description, status, id]);
+
+        if (res.rowCount === 0) {
+            return {
+                statusCode: 404,
+                body: JSON.stringify({ message: 'Tarea no encontrada' }),
+            };
+        }
+
+        return {
+            statusCode: 200,
+            body: JSON.stringify({ message: 'Tarea actualizada con éxito' }),
+        };
+    } catch (error) {
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ message: 'Error al actualizar la tarea', error }),
+        };
+    } finally {
+        await client.end();
+    }
 };
