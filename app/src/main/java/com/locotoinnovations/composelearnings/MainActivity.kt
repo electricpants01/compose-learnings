@@ -34,12 +34,14 @@ class MainActivity : ComponentActivity() {
 fun HomeScreen() {
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
 
-        val isFeatureEnabled = FeatureToggles.LaunchDarkly.SAMPLE_FEATURE.isEnabled()
+        val isSampleFeatureEnabled = FeatureToggles.LaunchDarkly.SAMPLE_FEATURE.isEnabled()
         Column(
             modifier = Modifier.padding(innerPadding)
         ) {
-            Text(text = "you can see this text $isFeatureEnabled")
-            // TODO: call FeatureToggles
+            Text(text = "validation: $isSampleFeatureEnabled")
+            if (isSampleFeatureEnabled) {
+                Text(text = "you can see this text if the feature is enabled")
+            }
         }
     }
 }
