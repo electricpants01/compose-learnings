@@ -10,6 +10,20 @@ resource "aws_api_gateway_rest_api" "todo_api" {
   }
 }
 
+# Security group for Lambda functions (assuming Lambda functions are in a public subnet)
+resource "aws_security_group" "lambda_sg" {
+  vpc_id = aws_vpc.todo_app_vpc.id
+  name   = "todo-app-lambda-sg"
+
+  # No need to reference security groups here, outbound traffic is already allowed
+
+  tags = {
+    Name        = "todo-app-lambda-sg"
+    Environment = "dev"
+    Project     = "Todo App"
+  }
+}
+
 # IAM Role for Lambda
 resource "aws_iam_role" "lambda_exec_role" {
   name = "todo-app-lambda-exec-role"
@@ -65,7 +79,7 @@ resource "aws_lambda_function" "create_todo" {
 
   vpc_config {
     subnet_ids         = [aws_subnet.public_subnet_1.id, aws_subnet.public_subnet_2.id]
-    security_group_ids = [aws_security_group.rds_sg.id]
+    security_group_ids = [aws_security_group.lambda_sg.id]  # Use Lambda SG
   }
 
   tags = {
@@ -118,7 +132,7 @@ resource "aws_lambda_function" "read_todo" {
 
   vpc_config {
     subnet_ids         = [aws_subnet.public_subnet_1.id, aws_subnet.public_subnet_2.id]
-    security_group_ids = [aws_security_group.rds_sg.id]
+    security_group_ids = [aws_security_group.lambda_sg.id]  # Use Lambda SG
   }
 
   tags = {
@@ -171,7 +185,7 @@ resource "aws_lambda_function" "update_todo" {
 
   vpc_config {
     subnet_ids         = [aws_subnet.public_subnet_1.id, aws_subnet.public_subnet_2.id]
-    security_group_ids = [aws_security_group.rds_sg.id]
+    security_group_ids = [aws_security_group.lambda_sg.id]  # Use Lambda SG
   }
 
   tags = {
@@ -224,7 +238,7 @@ resource "aws_lambda_function" "delete_todo" {
 
   vpc_config {
     subnet_ids         = [aws_subnet.public_subnet_1.id, aws_subnet.public_subnet_2.id]
-    security_group_ids = [aws_security_group.rds_sg.id]
+    security_group_ids = [aws_security_group.lambda_sg.id]  # Use Lambda SG
   }
 
   tags = {

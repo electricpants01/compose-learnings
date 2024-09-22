@@ -101,13 +101,18 @@ resource "aws_security_group" "rds_sg" {
     from_port   = 5432  # PostgreSQL port
     to_port     = 5432
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]  # Consider restricting this for security
+    security_groups = []  # Remove reference to Lambda SG
+    cidr_blocks = [
+      aws_subnet.public_subnet_1.cidr_block,  # Replace with your actual subnet CIDR blocks
+      aws_subnet.public_subnet_2.cidr_block,  # Replace with your actual subnet CIDR blocks
+    ]  # Allow from Lambda function subnets
   }
+
   egress {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["0.0.0.0/0"]  # Allow outbound traffic to anywhere (you can restrict this in production)
   }
 
   tags = {
