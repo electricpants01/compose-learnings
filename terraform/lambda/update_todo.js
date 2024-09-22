@@ -8,10 +8,13 @@ const client = new Client({
     port: 5432,
 });
 
+// Connect to the database before the handler function is invoked
+client.connect()
+  .then(() => console.log('Connected to PostgreSQL database'))
+  .catch(err => console.error('Error connecting to PostgreSQL database:', err));
+
 exports.handler = async (event) => {
     const { id, title, description, status } = JSON.parse(event.body);
-
-    await client.connect();
 
     try {
         const sql = 'UPDATE todos SET title = $1, description = $2, status = $3 WHERE id = $4';

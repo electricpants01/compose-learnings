@@ -8,10 +8,13 @@ const client = new Client({
     port: 5432,
 });
 
+// Connect to the database before the handler function is invoked
+client.connect()
+  .then(() => console.log('Connected to PostgreSQL database'))
+  .catch(err => console.error('Error connecting to PostgreSQL database:', err));
+
 exports.handler = async (event) => {
     const { id } = JSON.parse(event.body);
-
-    await client.connect();
 
     try {
         const sql = 'DELETE FROM todos WHERE id = $1';

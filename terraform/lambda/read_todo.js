@@ -1,10 +1,10 @@
 const { Client } = require('pg');
 
 const client = new Client({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASS,
-    database: process.env.DB_NAME,
+    host: "terraform-20240922181449343900000001.cx0iuaywg46s.us-east-1.rds.amazonaws.com",
+    user: "todo_user",
+    password: "locoto123",
+    database: "todo_db",
     port: 5432,
 });
 

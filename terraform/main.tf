@@ -105,6 +105,7 @@ resource "aws_security_group" "rds_sg" {
     cidr_blocks = [
       aws_subnet.public_subnet_1.cidr_block,  # Replace with your actual subnet CIDR blocks
       aws_subnet.public_subnet_2.cidr_block,  # Replace with your actual subnet CIDR blocks
+      "0.0.0.0/0", # Allow from anywhere (you can restrict this in production)
     ]  # Allow from Lambda function subnets
   }
 
@@ -133,13 +134,36 @@ resource "aws_db_instance" "todo_app_db" {
   username            = var.db_username
   password            = var.db_password
   skip_final_snapshot = true
-  publicly_accessible = false
+  publicly_accessible = true
+  # Associate the custom parameter group that disables SSL
+  parameter_group_name = aws_db_parameter_group.todo_app_pg_no_ssl.name
 
   vpc_security_group_ids = [aws_security_group.rds_sg.id]
   db_subnet_group_name   = aws_db_subnet_group.todo_app_db_subnet_group.name
 
   tags = {
     Name        = "todo-app-db"
+    Environment = "dev"
+    Project     = "Todo App"
+  }
+}
+
+# Custom RDS Parameter Group to disable SSL
+resource "aws_db_parameter_group" "todo_app_pg_no_ssl" {
+  name   = "todo-app-pg-no-ssl"
+  family = "postgres16"  # Ensure this is the correct version for your PostgreSQL RDS instance
+
+  description = "Parameter group to disable SSL for PostgreSQL RDS"
+
+  # Disable SSL by setting rds.force_ssl to 0
+  parameter {
+    name  = "rds.force_ssl"
+    value = "0"
+    apply_method = "immediate"
+  }
+
+  tags = {
+    Name        = "todo-app-pg-no-ssl"
     Environment = "dev"
     Project     = "Todo App"
   }
