@@ -8,8 +8,13 @@ const client = new Client({
     port: 5432,
 });
 
+// Connect to the database before the handler function is invoked
+client.connect()
+  .then(() => console.log('Connected to PostgreSQL database'))
+  .catch(err => console.error('Error connecting to PostgreSQL database:', err));
+
 exports.handler = async (event) => {
-    await client.connect();
+    // Use the existing client object for queries
     const taskId = event.queryStringParameters && event.queryStringParameters.id;
     let sql = 'SELECT * FROM todos';
     const params = [];
@@ -31,6 +36,7 @@ exports.handler = async (event) => {
             body: JSON.stringify({ message: 'Error al leer las tareas', error }),
         };
     } finally {
+        // Close the connection after the function is done
         await client.end();
     }
 };
