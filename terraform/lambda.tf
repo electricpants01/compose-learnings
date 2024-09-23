@@ -177,6 +177,14 @@ resource "aws_lambda_function" "delete_todo" {
   }
 }
 
+resource "aws_lambda_permission" "allow_api_gateway_read" {
+  statement_id  = "AllowExecutionFromAPIGatewayRead"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.read_todo.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_api_gateway_rest_api.todo_api.execution_arn}/*"
+}
+
 ## Todos Resource
 resource "aws_api_gateway_resource" "todos_resource" {
   rest_api_id = aws_api_gateway_rest_api.todo_api.id
@@ -226,14 +234,6 @@ resource "aws_api_gateway_integration" "read_todo_integration" {
   uri                     = aws_lambda_function.read_todo.invoke_arn
 }
 
-resource "aws_lambda_permission" "allow_api_gateway_read" {
-  statement_id  = "AllowExecutionFromAPIGatewayRead"
-  action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.read_todo.function_name
-  principal     = "apigateway.amazonaws.com"
-  source_arn    = "${aws_api_gateway_rest_api.todo_api.execution_arn}/*"
-}
-
 ## Update Todo Method
 resource "aws_api_gateway_method" "update_todo_method" {
   rest_api_id   = aws_api_gateway_rest_api.todo_api.id
@@ -251,6 +251,7 @@ resource "aws_api_gateway_integration" "update_todo_integration" {
   uri                     = aws_lambda_function.update_todo.invoke_arn
 }
 
+# Lambda Permissions update
 resource "aws_lambda_permission" "allow_api_gateway_update" {
   statement_id  = "AllowExecutionFromAPIGatewayUpdate"
   action        = "lambda:InvokeFunction"
@@ -258,6 +259,7 @@ resource "aws_lambda_permission" "allow_api_gateway_update" {
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_api_gateway_rest_api.todo_api.execution_arn}/*"
 }
+
 
 ## Delete Todo Method
 resource "aws_api_gateway_method" "delete_todo_method" {
