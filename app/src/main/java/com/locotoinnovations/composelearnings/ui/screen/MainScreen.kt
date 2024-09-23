@@ -31,16 +31,16 @@ fun MainScreen(
         if (uiState.isLoading) {
             Text(text = "Loading...")
         } else {
-            when (val posts = uiState.posts) {
+            when (val todos = uiState.todos) {
                 is DataResult.Success -> {
                     LazyColumn {
-                        items(posts.data.size) { index ->
-                            Text(text = posts.data[index].title)
+                        items(todos.data.size) { index ->
+                            Text(text = todos.data[index].title)
                         }
                     }
                 }
                 is DataResult.Failure.NetworkError -> {
-                    Text(text = "Error: ${posts.message}")
+                    Text(text = "Error: ${todos.message}")
                 }
 
                 else -> {

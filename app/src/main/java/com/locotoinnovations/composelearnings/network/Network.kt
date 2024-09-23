@@ -1,7 +1,7 @@
 package com.locotoinnovations.composelearnings.network
 
-import com.locotoinnovations.composelearnings.network.posts.PostService
-import com.locotoinnovations.composelearnings.ui.screen.PostRepository
+import com.locotoinnovations.composelearnings.network.posts.TodoService
+import com.locotoinnovations.composelearnings.ui.screen.TodoRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,7 +16,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object Network {
 
-    private const val API_PROD = "https://jsonplaceholder.typicode.com/"
+    private const val API_PROD = "https://60ab48uiy3.execute-api.us-east-1.amazonaws.com/dev/"
 
     @Provides
     @Singleton
@@ -37,13 +37,13 @@ object Network {
 
     @Provides
     @Singleton
-    fun providesPostService(retrofit: Retrofit): PostService {
-        return retrofit.create(PostService::class.java)
+    fun providesPostService(retrofit: Retrofit): TodoService {
+        return retrofit.create(TodoService::class.java)
     }
 
     @Provides
     @Singleton
-    fun providesPostRepository(postService: PostService): PostRepository {
-        return PostRepository(postService)
+    fun providesPostRepository(todoService: TodoService): TodoRepository {
+        return TodoRepository(todoService)
     }
 }
