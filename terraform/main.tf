@@ -134,7 +134,7 @@ resource "aws_db_instance" "todo_app_db" {
   username            = var.db_username
   password            = var.db_password
   skip_final_snapshot = true
-  publicly_accessible = true
+  publicly_accessible = false # Ensure the RDS instance is not publicly accessible in prod
   # Associate the custom parameter group that disables SSL
   parameter_group_name = aws_db_parameter_group.todo_app_pg_no_ssl.name
 
