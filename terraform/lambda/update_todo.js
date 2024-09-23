@@ -6,6 +6,9 @@ const client = new Client({
     password: process.env.DB_PASS,
     database: process.env.DB_NAME,
     port: 5432,
+    ssl: {
+                rejectUnauthorized: false, // Optional: Set to true if you have the certificate.
+            }
 });
 
 // Connect to the database before the handler function is invoked

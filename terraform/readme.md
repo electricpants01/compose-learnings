@@ -24,3 +24,6 @@ CREATE TABLE todos (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 ```
+
+## things to consider 
+- your database is publically accessible, you must change it for prod environment
