@@ -83,4 +83,7 @@ dependencies {
     // dagger hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
+    // navigation compose
+    implementation(libs.navigation.compose)
+    implementation(libs.hilt.navigation.compose)
 }
