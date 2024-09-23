@@ -229,7 +229,7 @@ resource "aws_api_gateway_integration" "read_todo_integration" {
   rest_api_id             = aws_api_gateway_rest_api.todo_api.id
   resource_id             = aws_api_gateway_resource.todos_resource.id
   http_method             = aws_api_gateway_method.read_todo_method.http_method
-  integration_http_method = "GET"
+  integration_http_method = "POST"
   type                    = "AWS_PROXY"
   uri                     = aws_lambda_function.read_todo.invoke_arn
 }
@@ -246,7 +246,7 @@ resource "aws_api_gateway_integration" "update_todo_integration" {
   rest_api_id             = aws_api_gateway_rest_api.todo_api.id
   resource_id             = aws_api_gateway_resource.todos_resource.id
   http_method             = aws_api_gateway_method.update_todo_method.http_method
-  integration_http_method = "PUT"
+  integration_http_method = "POST"
   type                    = "AWS_PROXY"
   uri                     = aws_lambda_function.update_todo.invoke_arn
 }
@@ -273,7 +273,7 @@ resource "aws_api_gateway_integration" "delete_todo_integration" {
   rest_api_id             = aws_api_gateway_rest_api.todo_api.id
   resource_id             = aws_api_gateway_resource.todos_resource.id
   http_method             = aws_api_gateway_method.delete_todo_method.http_method
-  integration_http_method = "DELETE"
+  integration_http_method = "POST"
   type                    = "AWS_PROXY"
   uri                     = aws_lambda_function.delete_todo.invoke_arn
 }
