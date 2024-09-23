@@ -3,7 +3,8 @@ const { Client } = require('pg');
 let client;
 
 const connectToDatabase = async () => {
-    if (!client) {
+    // Check if client is not already connected or closed
+    if (!client || client._ending) {
         client = new Client({
             host: process.env.DB_HOST,
             user: process.env.DB_USER,
@@ -28,13 +29,19 @@ const connectToDatabase = async () => {
 exports.handler = async (event) => {
     await connectToDatabase(); // Ensure the database connection is established
 
-    console.log("iniciando :D", event);
-
-    // Check if the body exists and is valid JSON
     let title, description;
     try {
-        title = event.title;
-        description = event.description;
+        console.log("event", event);
+        console.log("event body", event.body);
+
+        // Parse the body if it's a string
+        const body = typeof event.body === 'string' ? JSON.parse(event.body) : event.body;
+
+        title = body?.title;
+        description = body?.description;
+
+        console.log("title", title);
+        console.log("description", description);
 
         if (!title || !description) {
             return {
@@ -42,9 +49,6 @@ exports.handler = async (event) => {
                 body: JSON.stringify({ message: 'Title and description are required' }),
             };
         }
-
-        console.log("title", title);
-        console.log("description", description);
 
         const sql = 'INSERT INTO todos (title, description) VALUES ($1, $2) RETURNING id';
         const res = await client.query(sql, [title, description]);
@@ -59,11 +63,10 @@ exports.handler = async (event) => {
             statusCode: 500,
             body: JSON.stringify({ message: 'Error al insertar la tarea', error: error.message }),
         };
-    } finally {
-        await client.end();
     }
 };
 
+// Optional cleanup function (but not used in each request)
 const cleanup = async () => {
     if (client) {
         await client.end();

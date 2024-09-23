@@ -28,10 +28,11 @@ const connectToDatabase = async () => {
 exports.handler = async (event) => {
     await connectToDatabase(); // Ensure the database connection is established
 
-    const id = event.id
-    console.log("task id", id);
 
-    if (!id) {
+    const taskId = event.queryStringParameters?.id
+    console.log("task id", taskId);
+
+    if (!taskId) {
         return {
             statusCode: 400,
             body: JSON.stringify({ message: 'ID no proporcionado' }),
@@ -40,7 +41,7 @@ exports.handler = async (event) => {
 
     try {
         const sql = 'DELETE FROM todos WHERE id = $1';
-        const res = await client.query(sql, [id]);
+        const res = await client.query(sql, [taskId]);
 
         if (res.rowCount === 0) {
             return {
@@ -70,5 +71,3 @@ const cleanup = async () => {
         console.log('Database connection closed');
     }
 };
-
-// You can export cleanup function if needed to close connection when the Lambda instance is decommissioned
