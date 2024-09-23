@@ -1,23 +1,42 @@
 const { Client } = require('pg');
 
-const client = new Client({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASS,
-    database: process.env.DB_NAME,
-    port: 5432,
-    ssl: {
-                rejectUnauthorized: false, // Optional: Set to true if you have the certificate.
-            }
-});
+let client;
 
-// Connect to the database before the handler function is invoked
-client.connect()
-  .then(() => console.log('Connected to PostgreSQL database'))
-  .catch(err => console.error('Error connecting to PostgreSQL database:', err));
+const connectToDatabase = async () => {
+    if (!client) {
+        client = new Client({
+            host: process.env.DB_HOST,
+            user: process.env.DB_USER,
+            password: process.env.DB_PASS,
+            database: process.env.DB_NAME,
+            port: 5432,
+            ssl: {
+                rejectUnauthorized: false, // Optional: Set to true if you have the certificate.
+            },
+        });
+
+        try {
+            await client.connect();
+            console.log('Connected to PostgreSQL database');
+        } catch (err) {
+            console.error('Error connecting to PostgreSQL database:', err);
+            throw new Error('Database connection failed');
+        }
+    }
+};
 
 exports.handler = async (event) => {
-    const { id } = JSON.parse(event.body);
+    await connectToDatabase(); // Ensure the database connection is established
+
+    const id = event.id
+    console.log("task id", id);
+
+    if (!id) {
+        return {
+            statusCode: 400,
+            body: JSON.stringify({ message: 'ID no proporcionado' }),
+        };
+    }
 
     try {
         const sql = 'DELETE FROM todos WHERE id = $1';
@@ -35,11 +54,21 @@ exports.handler = async (event) => {
             body: JSON.stringify({ message: 'Tarea eliminada con éxito' }),
         };
     } catch (error) {
+        console.error('Error executing query:', error); // Log the error details
         return {
             statusCode: 500,
-            body: JSON.stringify({ message: 'Error al eliminar la tarea', error }),
+            body: JSON.stringify({ message: 'Error al eliminar la tarea', error: error.message }),
         };
-    } finally {
-        await client.end();
     }
 };
+
+// Cleanup function to close the database connection (optional)
+const cleanup = async () => {
+    if (client) {
+        await client.end();
+        client = null;
+        console.log('Database connection closed');
+    }
+};
+
+// You can export cleanup function if needed to close connection when the Lambda instance is decommissioned

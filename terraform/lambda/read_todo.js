@@ -1,25 +1,34 @@
 const { Client } = require('pg');
 
-const client = new Client({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASS,
-    database: process.env.DB_NAME,
-    port: 5432,
-    ssl: {
-                rejectUnauthorized: false, // Optional: Set to true if you have the certificate.
-            }
-});
+let client;
 
-// Connect to the database before the handler function is invoked
-client.connect()
-  .then(() => console.log('Connected to PostgreSQL database'))
-  .catch(err => console.error('Error connecting to PostgreSQL database:', err));
+const connectToDatabase = async () => {
+    if (!client) {
+        client = new Client({
+            host: process.env.DB_HOST,
+            user: process.env.DB_USER,
+            password: process.env.DB_PASS,
+            database: process.env.DB_NAME,
+            port: 5432,
+            ssl: {
+                rejectUnauthorized: false, // Optional: Set to true if you have the certificate.
+            },
+        });
+
+        try {
+            await client.connect();
+            console.log('Connected to PostgreSQL database');
+        } catch (err) {
+            console.error('Error connecting to PostgreSQL database:', err);
+            throw new Error('Database connection failed');
+        }
+    }
+};
 
 exports.handler = async (event) => {
-    console.log("Received event:", JSON.stringify(event, null, 2));  // Log the entire event for debugging
+    await connectToDatabase(); // Ensure the database connection is established
 
-    const taskId = event.queryStringParameters && event.queryStringParameters.id;
+    const taskId = event.id
     let sql = 'SELECT * FROM todos';
     const params = [];
 
@@ -54,5 +63,16 @@ exports.handler = async (event) => {
             statusCode: 500,
             body: JSON.stringify({ message: 'Error al leer las tareas', error: error.message }),
         };
+    } finally {
+        await cleanup();
+    }
+};
+
+// Optional cleanup function
+const cleanup = async () => {
+    if (client) {
+        await client.end();
+        client = null;
+        console.log('Database connection closed');
     }
 };

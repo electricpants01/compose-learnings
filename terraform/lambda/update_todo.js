@@ -17,7 +17,10 @@ client.connect()
   .catch(err => console.error('Error connecting to PostgreSQL database:', err));
 
 exports.handler = async (event) => {
-    const { id, title, description, status } = JSON.parse(event.body);
+    const id = event.id;
+    const title = event.title;
+    const description = event.description;
+    const status = event.status;
 
     try {
         const sql = 'UPDATE todos SET title = $1, description = $2, status = $3 WHERE id = $4';
@@ -40,6 +43,14 @@ exports.handler = async (event) => {
             body: JSON.stringify({ message: 'Error al actualizar la tarea', error }),
         };
     } finally {
+        await cleanup();
+    }
+};
+
+const cleanup = async () => {
+    if (client) {
         await client.end();
+        client = null;
+        console.log('Database connection closed');
     }
 };
