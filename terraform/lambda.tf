@@ -77,7 +77,7 @@ resource "aws_lambda_function" "create_todo" {
 
   vpc_config {
     subnet_ids         = [aws_subnet.public_subnet_1.id, aws_subnet.public_subnet_2.id]
-    security_group_ids = [aws_security_group.lambda_sg.id]  # Use Lambda SG
+    security_group_ids = [aws_security_group.lambda_sg.id]
   }
 
   tags = {
@@ -85,38 +85,6 @@ resource "aws_lambda_function" "create_todo" {
     Environment = "dev"
     Project     = "Todo App"
   }
-}
-
-## API Gateway Integration for Create Todo
-resource "aws_api_gateway_resource" "create_todo_resource" {
-  rest_api_id = aws_api_gateway_rest_api.todo_api.id
-  parent_id   = aws_api_gateway_rest_api.todo_api.root_resource_id
-  path_part   = "create"
-}
-
-resource "aws_api_gateway_method" "create_todo_method" {
-  rest_api_id   = aws_api_gateway_rest_api.todo_api.id
-  resource_id   = aws_api_gateway_resource.create_todo_resource.id
-  http_method   = "POST"
-  authorization = "NONE"
-}
-
-resource "aws_api_gateway_integration" "create_todo_integration" {
-  rest_api_id             = aws_api_gateway_rest_api.todo_api.id
-  resource_id             = aws_api_gateway_resource.create_todo_resource.id
-  http_method             = aws_api_gateway_method.create_todo_method.http_method
-  integration_http_method = "POST"
-  type                    = "AWS_PROXY"
-  uri                     = aws_lambda_function.create_todo.invoke_arn
-}
-
-# IAM Permission for API Gateway to invoke Create Todo Lambda
-resource "aws_lambda_permission" "allow_api_gateway_create" {
-  statement_id  = "AllowExecutionFromAPIGatewayCreate"
-  action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.create_todo.function_name
-  principal     = "apigateway.amazonaws.com"
-  source_arn    = "${aws_api_gateway_rest_api.todo_api.execution_arn}/*/*"
 }
 
 ## Read Todo Lambda Function
@@ -139,7 +107,7 @@ resource "aws_lambda_function" "read_todo" {
 
   vpc_config {
     subnet_ids         = [aws_subnet.public_subnet_1.id, aws_subnet.public_subnet_2.id]
-    security_group_ids = [aws_security_group.lambda_sg.id]  # Use Lambda SG
+    security_group_ids = [aws_security_group.lambda_sg.id]
   }
 
   tags = {
@@ -147,38 +115,6 @@ resource "aws_lambda_function" "read_todo" {
     Environment = "dev"
     Project     = "Todo App"
   }
-}
-
-## API Gateway Integration for Read Todo
-resource "aws_api_gateway_resource" "read_todo_resource" {
-  rest_api_id = aws_api_gateway_rest_api.todo_api.id
-  parent_id   = aws_api_gateway_rest_api.todo_api.root_resource_id
-  path_part   = "read"
-}
-
-resource "aws_api_gateway_method" "read_todo_method" {
-  rest_api_id   = aws_api_gateway_rest_api.todo_api.id
-  resource_id   = aws_api_gateway_resource.read_todo_resource.id
-  http_method   = "GET"
-  authorization = "NONE"
-}
-
-resource "aws_api_gateway_integration" "read_todo_integration" {
-  rest_api_id             = aws_api_gateway_rest_api.todo_api.id
-  resource_id             = aws_api_gateway_resource.read_todo_resource.id
-  http_method             = aws_api_gateway_method.read_todo_method.http_method
-  integration_http_method = "GET"
-  type                    = "AWS_PROXY"
-  uri                     = aws_lambda_function.read_todo.invoke_arn
-}
-
-# IAM Permission for API Gateway to invoke Read Todo Lambda
-resource "aws_lambda_permission" "allow_api_gateway_read" {
-  statement_id  = "AllowExecutionFromAPIGatewayRead"
-  action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.read_todo.function_name
-  principal     = "apigateway.amazonaws.com"
-  source_arn    = "${aws_api_gateway_rest_api.todo_api.execution_arn}/*/*"
 }
 
 ## Update Todo Lambda Function
@@ -201,7 +137,7 @@ resource "aws_lambda_function" "update_todo" {
 
   vpc_config {
     subnet_ids         = [aws_subnet.public_subnet_1.id, aws_subnet.public_subnet_2.id]
-    security_group_ids = [aws_security_group.lambda_sg.id]  # Use Lambda SG
+    security_group_ids = [aws_security_group.lambda_sg.id]
   }
 
   tags = {
@@ -209,38 +145,6 @@ resource "aws_lambda_function" "update_todo" {
     Environment = "dev"
     Project     = "Todo App"
   }
-}
-
-## API Gateway Integration for Update Todo
-resource "aws_api_gateway_resource" "update_todo_resource" {
-  rest_api_id = aws_api_gateway_rest_api.todo_api.id
-  parent_id   = aws_api_gateway_rest_api.todo_api.root_resource_id
-  path_part   = "update"
-}
-
-resource "aws_api_gateway_method" "update_todo_method" {
-  rest_api_id   = aws_api_gateway_rest_api.todo_api.id
-  resource_id   = aws_api_gateway_resource.update_todo_resource.id
-  http_method   = "PUT"
-  authorization = "NONE"
-}
-
-resource "aws_api_gateway_integration" "update_todo_integration" {
-  rest_api_id             = aws_api_gateway_rest_api.todo_api.id
-  resource_id             = aws_api_gateway_resource.update_todo_resource.id
-  http_method             = aws_api_gateway_method.update_todo_method.http_method
-  integration_http_method = "PUT"
-  type                    = "AWS_PROXY"
-  uri                     = aws_lambda_function.update_todo.invoke_arn
-}
-
-# IAM Permission for API Gateway to invoke Update Todo Lambda
-resource "aws_lambda_permission" "allow_api_gateway_update" {
-  statement_id  = "AllowExecutionFromAPIGatewayUpdate"
-  action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.update_todo.function_name
-  principal     = "apigateway.amazonaws.com"
-  source_arn    = "${aws_api_gateway_rest_api.todo_api.execution_arn}/*/*"
 }
 
 ## Delete Todo Lambda Function
@@ -263,7 +167,7 @@ resource "aws_lambda_function" "delete_todo" {
 
   vpc_config {
     subnet_ids         = [aws_subnet.public_subnet_1.id, aws_subnet.public_subnet_2.id]
-    security_group_ids = [aws_security_group.lambda_sg.id]  # Use Lambda SG
+    security_group_ids = [aws_security_group.lambda_sg.id]
   }
 
   tags = {
@@ -273,36 +177,111 @@ resource "aws_lambda_function" "delete_todo" {
   }
 }
 
-## API Gateway Integration for Delete Todo
-resource "aws_api_gateway_resource" "delete_todo_resource" {
+## Todos Resource
+resource "aws_api_gateway_resource" "todos_resource" {
   rest_api_id = aws_api_gateway_rest_api.todo_api.id
   parent_id   = aws_api_gateway_rest_api.todo_api.root_resource_id
-  path_part   = "delete"
+  path_part   = "todos"
 }
 
+## Create Todo Method
+resource "aws_api_gateway_method" "create_todo_method" {
+  rest_api_id   = aws_api_gateway_rest_api.todo_api.id
+  resource_id   = aws_api_gateway_resource.todos_resource.id
+  http_method   = "POST"
+  authorization = "NONE"
+}
+
+resource "aws_api_gateway_integration" "create_todo_integration" {
+  rest_api_id             = aws_api_gateway_rest_api.todo_api.id
+  resource_id             = aws_api_gateway_resource.todos_resource.id
+  http_method             = aws_api_gateway_method.create_todo_method.http_method
+  integration_http_method = "POST"
+  type                    = "AWS_PROXY"
+  uri                     = aws_lambda_function.create_todo.invoke_arn
+}
+
+resource "aws_lambda_permission" "allow_api_gateway_create" {
+  statement_id  = "AllowExecutionFromAPIGatewayCreate"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.create_todo.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_api_gateway_rest_api.todo_api.execution_arn}/*"
+}
+
+## Read Todo Method
+resource "aws_api_gateway_method" "read_todo_method" {
+  rest_api_id   = aws_api_gateway_rest_api.todo_api.id
+  resource_id   = aws_api_gateway_resource.todos_resource.id
+  http_method   = "GET"
+  authorization = "NONE"
+}
+
+resource "aws_api_gateway_integration" "read_todo_integration" {
+  rest_api_id             = aws_api_gateway_rest_api.todo_api.id
+  resource_id             = aws_api_gateway_resource.todos_resource.id
+  http_method             = aws_api_gateway_method.read_todo_method.http_method
+  integration_http_method = "GET"
+  type                    = "AWS_PROXY"
+  uri                     = aws_lambda_function.read_todo.invoke_arn
+}
+
+resource "aws_lambda_permission" "allow_api_gateway_read" {
+  statement_id  = "AllowExecutionFromAPIGatewayRead"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.read_todo.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_api_gateway_rest_api.todo_api.execution_arn}/*"
+}
+
+## Update Todo Method
+resource "aws_api_gateway_method" "update_todo_method" {
+  rest_api_id   = aws_api_gateway_rest_api.todo_api.id
+  resource_id   = aws_api_gateway_resource.todos_resource.id
+  http_method   = "PUT"
+  authorization = "NONE"
+}
+
+resource "aws_api_gateway_integration" "update_todo_integration" {
+  rest_api_id             = aws_api_gateway_rest_api.todo_api.id
+  resource_id             = aws_api_gateway_resource.todos_resource.id
+  http_method             = aws_api_gateway_method.update_todo_method.http_method
+  integration_http_method = "PUT"
+  type                    = "AWS_PROXY"
+  uri                     = aws_lambda_function.update_todo.invoke_arn
+}
+
+resource "aws_lambda_permission" "allow_api_gateway_update" {
+  statement_id  = "AllowExecutionFromAPIGatewayUpdate"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.update_todo.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_api_gateway_rest_api.todo_api.execution_arn}/*"
+}
+
+## Delete Todo Method
 resource "aws_api_gateway_method" "delete_todo_method" {
   rest_api_id   = aws_api_gateway_rest_api.todo_api.id
-  resource_id   = aws_api_gateway_resource.delete_todo_resource.id
+  resource_id   = aws_api_gateway_resource.todos_resource.id
   http_method   = "DELETE"
   authorization = "NONE"
 }
 
 resource "aws_api_gateway_integration" "delete_todo_integration" {
   rest_api_id             = aws_api_gateway_rest_api.todo_api.id
-  resource_id             = aws_api_gateway_resource.delete_todo_resource.id
+  resource_id             = aws_api_gateway_resource.todos_resource.id
   http_method             = aws_api_gateway_method.delete_todo_method.http_method
   integration_http_method = "DELETE"
   type                    = "AWS_PROXY"
   uri                     = aws_lambda_function.delete_todo.invoke_arn
 }
 
-# IAM Permission for API Gateway to invoke Delete Todo Lambda
 resource "aws_lambda_permission" "allow_api_gateway_delete" {
   statement_id  = "AllowExecutionFromAPIGatewayDelete"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.delete_todo.function_name
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "${aws_api_gateway_rest_api.todo_api.execution_arn}/*/*"
+  source_arn    = "${aws_api_gateway_rest_api.todo_api.execution_arn}/*"
 }
 
 # API Gateway Deployment
