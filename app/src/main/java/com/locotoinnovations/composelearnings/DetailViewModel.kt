@@ -3,6 +3,8 @@ package com.locotoinnovations.composelearnings
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
 @HiltViewModel
@@ -10,7 +12,8 @@ class DetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
-    val detailId: String = savedStateHandle.get<String>(DETAIL_ID_SAVED_STATE_KEY)!!
+    private val detailId: String = savedStateHandle.get<String>(DETAIL_ID_SAVED_STATE_KEY)!!
+    val detailIdFlow: StateFlow<String> = MutableStateFlow(detailId)
 
     init {
         println(detailId)

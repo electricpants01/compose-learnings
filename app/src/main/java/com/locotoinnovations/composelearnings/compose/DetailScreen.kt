@@ -1,13 +1,28 @@
 package com.locotoinnovations.composelearnings.compose
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.locotoinnovations.composelearnings.DetailViewModel
 
 @Composable
 fun DetailScreen(
     detailViewModel: DetailViewModel = hiltViewModel(),
 ) {
-    Text("Show detail screen")
+    val detailId = detailViewModel.detailIdFlow.collectAsStateWithLifecycle().value
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Column {
+            Text("your id is ${detailId}")
+            Text("Show detail screen")
+        }
+    }
 }
