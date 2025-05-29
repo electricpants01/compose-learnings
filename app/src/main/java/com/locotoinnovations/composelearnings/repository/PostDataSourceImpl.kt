@@ -1,5 +1,6 @@
 package com.locotoinnovations.composelearnings.repository
 
+import androidx.paging.PagingSource
 import com.locotoinnovations.composelearnings.database.post.PostDao
 import com.locotoinnovations.composelearnings.database.post.PostEntity
 import com.locotoinnovations.composelearnings.database.post.PostPageKeyEntity
@@ -52,7 +53,7 @@ class PostDataSourceImpl @Inject constructor(
         postDao.insertAll(posts)
     }
 
-    override suspend fun readPostsPagingSource(): androidx.paging.PagingSource<Int, PostEntity> {
+    override fun readPostsPagingSource(): PagingSource<Int, PostEntity> {
         return postDao.readPostsPagingSource()
     }
 }

@@ -11,7 +11,7 @@ data class PostUiState(
 fun PostEntity.toPostUiState(): PostUiState {
     return PostUiState(
         id = this.id,
-        title = this.title,
+        title = "${this.id} - ${this.title}",
         body = this.body
     )
 }

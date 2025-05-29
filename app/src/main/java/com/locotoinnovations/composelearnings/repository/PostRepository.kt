@@ -16,7 +16,7 @@ class PostRepository @Inject constructor(
 
     suspend fun savePosts(posts: List<PostEntity>) = postDataSourceImpl.savePosts(posts)
 
-    suspend fun readPostsPagingSource() = postDataSourceImpl.readPostsPagingSource()
+    fun readPostsPagingSource() = postDataSourceImpl.readPostsPagingSource()
 
     suspend fun getNextPostPageKey(): Int = postDataSourceImpl.getNextPostPageKey()
 

@@ -2,8 +2,10 @@ package com.locotoinnovations.composelearnings.ui.screen
 
 import android.R.attr.data
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -17,6 +19,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
@@ -24,6 +27,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.LoadState
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.locotoinnovations.composelearnings.network.DataResult
 
 @Composable
@@ -31,26 +36,63 @@ fun MainScreen(
     modifier: Modifier,
     viewmodel: MainScreenViewModel = hiltViewModel()
 ) {
-    val uiState by viewmodel.uiState.collectAsStateWithLifecycle(initialValue = MainScreenUiState())
+    val posts = viewmodel.posts.collectAsLazyPagingItems()
 
     Column(modifier = modifier.padding(16.dp)) {
-        Button(onClick = { viewmodel.fetchPosts() }) {
+        Button(onClick = {
+            // TODO - call viewmodel.fetchPosts()
+        }) {
             Text(text = "Fetch data")
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        if (uiState.isLoading) {
-            CircularProgressIndicator()
-        } else {
-            if (uiState.error != null) {
-                Text(text = "Error: ${uiState.error}", color = Color.Red)
-            } else {
-                uiState.posts?.let { posts ->
-                    LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                        items(posts.size) { index ->
-                            val post = posts[index]
-                            PostCard(post = post)
+        LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.fillMaxSize()
+        ) {
+            items(posts.itemCount) { index ->
+                val post = posts[index]
+                if (post != null) {
+                    PostCard(post = post)
+                }
+            }
+
+            posts.apply {
+                when {
+                    loadState.refresh is LoadState.Loading -> {
+                        item {
+                            Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                                CircularProgressIndicator()
+                            }
+                        }
+                    }
+
+                    loadState.refresh is LoadState.Error -> {
+                        val error = loadState.refresh as LoadState.Error
+                        item {
+                            Text(
+                                text = "Error: ${error.error.localizedMessage}",
+                                color = Color.Red
+                            )
+                        }
+                    }
+
+                    loadState.append is LoadState.Loading -> {
+                        item {
+                            Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                                CircularProgressIndicator()
+                            }
+                        }
+                    }
+
+                    loadState.append is LoadState.Error -> {
+                        val error = loadState.append as LoadState.Error
+                        item {
+                            Text(
+                                text = "Error loading more: ${error.error.localizedMessage}",
+                                color = Color.Red
+                            )
                         }
                     }
                 }
