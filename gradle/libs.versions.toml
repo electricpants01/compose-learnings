@@ -17,7 +17,7 @@ navigationCompose = "2.7.7"
 hiltNavigationCompose = "1.2.0"
 roomCompiler = "2.6.1"
 roomKtx = "2.6.1"
-
+pagingVersion = "3.2.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -54,6 +54,9 @@ hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-com
 room-android-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "roomKtx" }
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "roomKtx" }
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "roomCompiler" }
+# Paging 3
+androidx-paging-runtime = { group = "androidx.paging", name = "paging-runtime", version.ref = "pagingVersion" }
+androidx-paging-compose = { group = "androidx.paging", name = "paging-compose", version.ref = "pagingVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
