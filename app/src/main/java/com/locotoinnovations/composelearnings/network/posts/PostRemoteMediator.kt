@@ -7,6 +7,18 @@ import androidx.paging.RemoteMediator
 import com.locotoinnovations.composelearnings.database.post.PostEntity
 import com.locotoinnovations.composelearnings.repository.PostRepository
 
+/**
+ * This remote mediator is responsible for loading posts from a remote source
+ * and saving them to the local database.
+ * It uses the PostRepository to fetch posts and manage pagination.
+ * It handles three types of loads:
+ * - REFRESH: Loads the first page of posts and clears the existing data.
+ * - APPEND: Loads the next page of posts based on the last loaded page.
+ * - PREPEND: Not used in this case, as we are only appending new data.
+ * It loads all posts from network until response.size < PAGE_SIZE
+ * The first time fetching from the network until the response size is less than PAGE_SIZE
+ * the second time the user opens the app, it fetching the the page 0, and last page that is in local storage
+ */
 @OptIn(ExperimentalPagingApi::class)
 class PostRemoteMediator(
     private val postRepository: PostRepository,
