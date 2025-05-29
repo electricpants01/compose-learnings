@@ -9,6 +9,16 @@ class PostRepository @Inject constructor(
     private val postDataSourceImpl: PostDataSourceImpl,
 ) {
 
-    fun getPosts(): Flow<DataResult<List<PostEntity>>> = postDataSourceImpl.getPosts()
+    fun readPosts(): Flow<DataResult<List<PostEntity>>> = postDataSourceImpl.fetchPostsAndSaveInLocalStorage()
 
+    suspend fun fetchPosts(start: Int, limit: Int): Result<List<PostEntity>> =
+        postDataSourceImpl.fetchPosts(start, limit)
+
+    suspend fun savePosts(posts: List<PostEntity>) = postDataSourceImpl.savePosts(posts)
+
+    suspend fun readPostsPagingSource() = postDataSourceImpl.readPostsPagingSource()
+
+    suspend fun getNextPostPageKey(): Int = postDataSourceImpl.getNextPostPageKey()
+
+    suspend fun insertPostPageKey(pageKey: Int) = postDataSourceImpl.insertPostPageKey(pageKey)
 }

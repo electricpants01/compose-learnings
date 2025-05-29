@@ -23,7 +23,7 @@ class MainScreenViewModel @Inject constructor(
     val uiState: Flow<MainScreenUiState> = _uiState
 
     fun fetchPosts() {
-        postRepository.getPosts()
+        postRepository.readPosts()
             .onStart {
                 _uiState.update {
                     it.copy(
@@ -54,7 +54,7 @@ class MainScreenViewModel @Inject constructor(
                         _uiState.update {
                             it.copy(
                                 isLoading = false,
-                                error = postList.message ?: "Network error"
+                                error = postList.message
                             )
                         }
                     }
