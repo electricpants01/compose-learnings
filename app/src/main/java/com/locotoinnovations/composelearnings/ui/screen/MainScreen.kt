@@ -51,7 +51,7 @@ fun MainScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp),
             modifier = Modifier.fillMaxSize()
         ) {
-            items(posts.itemCount) { index ->
+            items(posts.itemCount, key = { index -> posts[index]?.id ?: index }) { index ->
                 val post = posts[index]
                 if (post != null) {
                     PostCard(post = post)

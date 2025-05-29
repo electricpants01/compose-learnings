@@ -1,7 +1,9 @@
 package com.locotoinnovations.composelearnings.ui.screen
 
+import androidx.compose.runtime.Immutable
 import com.locotoinnovations.composelearnings.database.post.PostEntity
 
+@Immutable
 data class PostUiState(
     val id: Int,
     val title: String,
